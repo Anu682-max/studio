@@ -1,3 +1,59 @@
+
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "A modern architectural building at dusk.",
+      "imageUrl": "https://picsum.photos/seed/hero1/1920/1080",
+      "imageHint": "modern architecture"
+    },
+    {
+      "id": "about-1",
+      "description": "A construction worker reviewing blueprints on a sunlit construction site.",
+      "imageUrl": "https://picsum.photos/seed/about1/800/600",
+      "imageHint": "construction blueprints"
+    },
+    {
+      "id": "project-1",
+      "description": "The sleek, minimalist interior of a newly constructed office building.",
+      "imageUrl": "https://picsum.photos/seed/proj1/600/400",
+      "imageHint": "minimalist interior"
+    },
+    {
+      "id": "project-2",
+      "description": "An aerial view of a large residential complex under construction.",
+      "imageUrl": "https://picsum.photos/seed/proj2/600/400",
+      "imageHint": "residential construction"
+    },
+    {
+      "id": "project-3",
+      "description": "The exterior of a modern family home with large windows and a wooden facade.",
+      "imageUrl": "https://picsum.photos/seed/proj3/600/400",
+      "imageHint": "modern house"
+    },
+    {
+      "id": "project-4",
+      "description": "A beautifully landscaped garden in front of a contemporary building.",
+      "imageUrl": "https://picsum.photos/seed/proj4/600/400",
+      "imageHint": "landscaped garden"
+    },
+    {
+      "id": "news-1",
+      "description": "A team of architects and engineers in a meeting.",
+      "imageUrl": "https://picsum.photos/seed/news1/400/300",
+      "imageHint": "architects meeting"
+    },
+    {
+      "id": "news-2",
+      "description": "A crane lifting materials on a high-rise construction site.",
+      "imageUrl": "https://picsum.photos/seed/news2/400/300",
+      "imageHint": "construction crane"
+    },
+    {
+      "id": "news-3",
+      "description": "A groundbreaking ceremony with shovels in the dirt.",
+      "imageUrl": "https://picsum.photos/seed/news3/400/300",
+      "imageHint": "groundbreaking ceremony"
+    }
+  ]
 }
