@@ -1,4 +1,10 @@
+'use client';
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase/config";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,33 +17,85 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
-
-// Placeholder for server action
-async function handleLogin(formData: FormData) {
-  "use server";
-  const email = formData.get("email") as string;
-  // In a real app, you'd validate and use Firebase Auth here.
-  console.log("Attempting login for:", email);
-  // For now, let's just redirect to dashboard
-  const { redirect } = await import("next/navigation");
-  redirect("/admin/dashboard");
-}
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsPending(true);
+
+    if (!email || !password) {
+      setError("И-мэйл, нууц үгээ оруулна уу.");
+      setIsPending(false);
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Амжилттай нэвтэрлээ",
+        description: "Хяналтын самбар луу шилжиж байна...",
+      });
+      router.push("/admin/dashboard");
+    } catch (error: any) {
+      setIsPending(false);
+      console.error("Firebase Login Error:", error);
+      let errorMessage = "Нэвтрэхэд алдаа гарлаа. Дахин оролдоно уу.";
+      switch (error.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          errorMessage = "И-мэйл эсвэл нууц үг буруу байна.";
+          break;
+        case "auth/invalid-email":
+          errorMessage = "Хүчингүй и-мэйл хаяг.";
+          break;
+        default:
+          errorMessage = "Тодорхойгүй алдаа гарлаа.";
+          break;
+      }
+      setError(errorMessage);
+       toast({
+        title: "Нэвтрэхэд алдаа гарлаа",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary p-4">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-               <Icons.Logo />
-            </div>
+          <div className="flex justify-center mb-4">
+            <Icons.Logo />
+          </div>
           <CardTitle className="text-2xl font-headline">Админ нэвтрэх</CardTitle>
           <CardDescription>
             Хяналтын самбарт нэвтрэхийн тулд нэвтрэх мэдээллээ оруулна уу.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleLogin} className="grid gap-4">
+          <form onSubmit={handleLogin} className="grid gap-4">
+            {error && (
+               <Alert variant="destructive">
+                  <Terminal className="h-4 w-4" />
+                  <AlertTitle>Алдаа</AlertTitle>
+                  <AlertDescription>
+                   {error}
+                  </AlertDescription>
+                </Alert>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">И-мэйл</Label>
               <Input
@@ -46,6 +104,9 @@ export default function LoginPage() {
                 name="email"
                 placeholder="admin@example.com"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isPending}
               />
             </div>
             <div className="grid gap-2">
@@ -58,13 +119,21 @@ export default function LoginPage() {
                   Нууц үгээ мартсан уу?
                 </Link>
               </div>
-              <Input id="password" type="password" name="password" required />
+              <Input 
+                id="password" 
+                type="password" 
+                name="password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isPending}
+              />
             </div>
-            <Button type="submit" className="w-full">
-              Нэвтрэх
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Нэвтэрч байна..." : "Нэвтрэх"}
             </Button>
             <Button variant="outline" className="w-full" asChild>
-                <Link href="/">Вэбсайт руу буцах</Link>
+              <Link href="/">Вэбсайт руу буцах</Link>
             </Button>
           </form>
         </CardContent>

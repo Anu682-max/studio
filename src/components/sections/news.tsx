@@ -1,11 +1,52 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { news } from '@/lib/data';
+import { getNews, type NewsArticle } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 export default function News() {
+  const [news, setNews] = useState<NewsArticle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const fetchedNews = await getNews();
+        setNews(fetchedNews);
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
+
+  const renderSkeleton = () => (
+    Array.from({ length: 3 }).map((_, index) => (
+      <Card key={`skeleton-${index}`} className="flex flex-col overflow-hidden">
+         <Skeleton className="aspect-[4/3] w-full" />
+        <CardHeader>
+          <Skeleton className="h-5 w-4/5 mb-2" />
+          <Skeleton className="h-4 w-1/3" />
+        </CardHeader>
+        <CardContent className="flex-grow">
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-2/3" />
+        </CardContent>
+        <div className="p-6 pt-0">
+           <Skeleton className="h-5 w-20" />
+        </div>
+      </Card>
+    ))
+  )
+
   return (
     <section id="news" className="bg-secondary">
       <div className="container">
@@ -17,7 +58,7 @@ export default function News() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {news.map((article) => {
+          {isLoading ? renderSkeleton() : news.map((article) => {
             const image = PlaceHolderImages.find(p => p.id === article.imagePlaceholderId);
             return (
               <Card key={article.id} className="flex flex-col overflow-hidden">
@@ -25,7 +66,7 @@ export default function News() {
                   <div className="relative aspect-[4/3] w-full">
                     <Image
                       src={image.imageUrl}
-                      alt={image.description}
+                      alt={article.title}
                       fill
                       className="object-cover"
                       data-ai-hint={image.imageHint}
@@ -48,6 +89,11 @@ export default function News() {
             );
           })}
         </div>
+        {!isLoading && news.length === 0 && (
+          <div className="text-center p-8 text-muted-foreground">
+              Сүүлийн үеийн мэдээ одоогоор байхгүй байна.
+          </div>
+        )}
       </div>
     </section>
   );

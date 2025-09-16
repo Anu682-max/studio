@@ -1,38 +1,31 @@
 'use server';
 
-import { z } from 'zod';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase/config';
+import { redirect } from 'next/navigation';
 
-const contactSchema = z.object({
-  name: z.string().min(2, { message: 'Нэр дор хаяж 2 тэмдэгттэй байх ёстой.' }),
-  email: z.string().email({ message: 'Хүчинтэй и-мэйл хаяг оруулна уу.' }),
-  subject: z.string().min(5, { message: 'Гарчиг дор хаяж 5 тэмдэгттэй байх ёстой.' }),
-  message: z.string().min(10, { message: 'Зурвас дор хаяж 10 тэмдэгттэй байх ёстой.' }),
-});
+export async function login(formData: FormData) {
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
 
-export async function submitContactForm(prevState: any, formData: FormData) {
-  const validatedFields = contactSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    subject: formData.get('subject'),
-    message: formData.get('message'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Доорх алдааг засна уу.',
-      success: false,
-    };
+  try {
+    // Note: Firebase Auth client SDK isn't directly usable in Server Actions
+    // in the same way as on the client. This is a conceptual example.
+    // For a real app, you'd handle session management with cookies/tokens.
+    // However, for this prototyping environment, we will simulate the flow.
+    // A more robust solution involves client-side auth handling or a library like next-auth.
+    console.log(`Attempting login for ${email}`);
+  } catch (error) {
+    console.error('Login failed:', error);
+    return { success: false, error: 'И-мэйл эсвэл нууц үг буруу.' };
   }
+  
+  // On successful login, redirect to dashboard
+  redirect('/admin/dashboard');
+}
 
-  // Here you would typically send an email, save to a database, etc.
-  // For this example, we'll just log the data.
-  console.log('Contact form submitted:');
-  console.log(validatedFields.data);
-
-  return {
-    message: 'Зурвас илгээсэнд баярлалаа! Бид тантай удахгүй холбогдох болно.',
-    success: true,
-    reset: true,
-  };
+export async function logout() {
+  // Similarly, signout would clear server-side session state
+  console.log('Logging out');
+  redirect('/admin/login');
 }

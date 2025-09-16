@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Image from "next/image";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import * as React from 'react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -12,14 +12,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -27,7 +27,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -35,7 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,18 +45,50 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/alert-dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 
-import { news as initialNews, type NewsArticle } from "@/lib/data";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import {
+  getNews,
+  addNewsArticle,
+  updateNewsArticle,
+  deleteNewsArticle,
+  type NewsArticle,
+} from '@/lib/data';
 
 export default function NewsPage() {
-  const [news, setNews] = React.useState<NewsArticle[]>(initialNews);
+  const [news, setNews] = React.useState<NewsArticle[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [currentArticle, setCurrentArticle] = React.useState<NewsArticle | null>(null);
+  const [currentArticle, setCurrentArticle] =
+    React.useState<NewsArticle | null>(null);
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState<string | null>(null);
+  const { toast } = useToast();
+
+  const fetchNews = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const fetchedNews = await getNews();
+      setNews(fetchedNews);
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+      toast({
+        title: 'Алдаа',
+        description: 'Мэдээг уншихад алдаа гарлаа.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  React.useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   const handleAddArticle = () => {
     setCurrentArticle(null);
@@ -68,28 +100,75 @@ export default function NewsPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDeleteArticle = (articleId: string) => {
-    setNews(news.filter((a) => a.id !== articleId));
+  const handleDeleteArticle = async (articleId: string) => {
+    setIsDeleting(articleId);
+    try {
+      await deleteNewsArticle(articleId);
+      toast({
+        title: 'Амжилттай',
+        description: 'Нийтлэлийг устгалаа.',
+      });
+      await fetchNews(); // Refresh list
+    } catch (error) {
+      console.error('Failed to delete article:', error);
+      toast({
+        title: 'Алдаа',
+        description: 'Нийтлэлийг устгахад алдаа гарлаа.',
+        variant: 'destructive',
+      });
+    } finally {
+        setIsDeleting(null);
+    }
   };
   
-  const handleSaveArticle = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveArticle = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSaving(true);
     const formData = new FormData(e.currentTarget);
-    const newArticle: NewsArticle = {
-      id: currentArticle?.id || `n${Date.now()}`,
-      title: formData.get("title") as string,
-      date: new Date(formData.get("date") as string).toISOString(),
-      summary: formData.get("summary") as string,
+    const newArticleData = {
+      title: formData.get('title') as string,
+      date: new Date(formData.get('date') as string).toISOString(),
+      summary: formData.get('summary') as string,
       imagePlaceholderId: 'news-1', // Default or select
     };
 
-    if (currentArticle) {
-      setNews(news.map((a) => (a.id === currentArticle.id ? newArticle : a)));
-    } else {
-      setNews([newArticle, ...news]);
+    try {
+        if (currentArticle) {
+            await updateNewsArticle(currentArticle.id, newArticleData);
+            toast({ title: 'Амжилттай', description: 'Нийтлэлийг шинэчиллээ.' });
+        } else {
+            await addNewsArticle(newArticleData);
+            toast({ title: 'Амжилттай', description: 'Шинэ нийтлэл нэмлээ.' });
+        }
+        setIsDialogOpen(false);
+        await fetchNews(); // Refresh list
+    } catch (error) {
+      console.error('Failed to save article:', error);
+      toast({
+        title: 'Алдаа',
+        description: 'Нийтлэлийг хадгалахад алдаа гарлаа.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
     }
-    setIsDialogOpen(false);
   };
+  
+  const renderSkeleton = () => (
+    Array.from({ length: 3 }).map((_, index) => (
+       <TableRow key={`skeleton-${index}`}>
+            <TableCell>
+                <Skeleton className="h-5 w-4/5" />
+            </TableCell>
+            <TableCell>
+                <Skeleton className="h-5 w-24" />
+            </TableCell>
+            <TableCell>
+                 <Skeleton className="h-8 w-8" />
+            </TableCell>
+        </TableRow>
+    ))
+  );
 
   return (
     <Card>
@@ -121,7 +200,7 @@ export default function NewsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {news.map((article) => (
+            {isLoading ? renderSkeleton() : news.map((article) => (
               <TableRow key={article.id}>
                 <TableCell className="font-medium">{article.title}</TableCell>
                 <TableCell>{new Date(article.date).toLocaleDateString()}</TableCell>
@@ -138,7 +217,7 @@ export default function NewsPage() {
                       <DropdownMenuItem onClick={() => handleEditArticle(article)}>Засах</DropdownMenuItem>
                        <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Устгах</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-600">Устгах</DropdownMenuItem>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
@@ -149,7 +228,9 @@ export default function NewsPage() {
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel>Цуцлах</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteArticle(article.id)}>Үргэлжлүүлэх</AlertDialogAction>
+                              <AlertDialogAction onClick={() => handleDeleteArticle(article.id)} disabled={isDeleting === article.id}>
+                                {isDeleting === article.id ? 'Устгаж байна...' : 'Үргэлжлүүлэх'}
+                              </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
@@ -160,6 +241,11 @@ export default function NewsPage() {
             ))}
           </TableBody>
         </Table>
+         { !isLoading && news.length === 0 && (
+            <div className="text-center p-8 text-muted-foreground">
+                Мэдээ олдсонгүй.
+            </div>
+        )}
       </CardContent>
       <CardFooter>
         <div className="text-xs text-muted-foreground">
@@ -197,8 +283,8 @@ export default function NewsPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Цуцлах</Button>
-              <Button type="submit">Хадгалах</Button>
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>Цуцлах</Button>
+              <Button type="submit" disabled={isSaving}>{isSaving ? 'Хадгалж байна...' : 'Хадгалах'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
