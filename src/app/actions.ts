@@ -2,6 +2,8 @@
 
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
 
 // --- Form Validation Schemas ---
 const contactSchema = z.object({
@@ -28,21 +30,14 @@ export type ContactFormState = {
 // --- Server Actions ---
 
 export async function login(formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-
-  try {
-    console.log(`Attempting login for ${email}`);
-  } catch (error) {
-    console.error('Login failed:', error);
-    return { success: false, error: 'И-мэйл эсвэл нууц үг буруу.' };
-  }
-  
+  // Firebase auth is handled on the client-side in login/page.tsx
+  // This is a placeholder and could be used for other login-related server logic if needed.
   redirect('/admin/dashboard');
 }
 
 export async function logout() {
-  console.log('Logging out');
+  // Firebase auth is handled on the client-side
+  // This is a placeholder and could be used for other logout-related server logic if needed.
   redirect('/admin/login');
 }
 
@@ -67,11 +62,11 @@ export async function submitContactForm(
   }
   
   try {
-    // Simulate sending data to a database or email service
-    console.log("Received contact form submission:", validatedFields.data);
-    
-    // In a real app, you would add the data to Firestore here, e.g.:
-    // await addDoc(collection(db, 'contacts'), validatedFields.data);
+    const contactData = {
+        ...validatedFields.data,
+        submittedAt: new Date(),
+    };
+    await addDoc(collection(db, 'contacts'), contactData);
 
     return {
       message: 'Таны зурвасыг амжилттай хүлээн авлаа. Бид тантай тун удахгүй холбогдох болно.',
