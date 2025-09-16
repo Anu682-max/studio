@@ -3,7 +3,10 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { submitContactForm } from '@/app/actions';
+import { submitContactForm, type ContactFormState } from '@/app/actions';
+import { useFormState } from 'react-dom';
+import { useEffect, useRef } from 'react';
+
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useRef, useTransition } from 'react';
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: 'Нэр дор хаяж 2 тэмдэгттэй байх ёстой.' }),
@@ -23,11 +25,16 @@ const contactSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
+const initialState: ContactFormState = {
+    message: '',
+    success: false,
+};
+
 export default function Contact() {
   const { toast } = useToast();
+  const [formState, formAction] = useFormState(submitContactForm, initialState);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
-
+  
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -38,35 +45,28 @@ export default function Contact() {
     },
   });
 
-  const onSubmit = (data: ContactFormValues) => {
-    startTransition(async () => {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value);
+  useEffect(() => {
+    if (formState.message) {
+      toast({
+        title: formState.success ? 'Амжилттай!' : 'Алдаа',
+        description: formState.message,
+        variant: formState.success ? 'default' : 'destructive',
       });
-      
-      const state = await submitContactForm(null, formData);
-
-      if (state.message) {
-        toast({
-          title: state.success ? 'Амжилттай!' : 'Алдаа',
-          description: state.message,
-          variant: state.success ? 'default' : 'destructive',
-        });
-      }
-      if (state.success && state.reset) {
-          form.reset();
-      }
-      if (!state.success && state.errors) {
-        Object.entries(state.errors).forEach(([key, value]) => {
+    }
+    if (formState.success && formState.reset) {
+        formRef.current?.reset();
+        form.reset();
+    }
+    if (!formState.success && formState.errors) {
+       Object.entries(formState.errors).forEach(([key, value]) => {
             form.setError(key as keyof ContactFormValues, {
                 type: 'manual',
                 message: (value as string[]).join(' '),
             });
         });
-      }
-    });
-  }
+    }
+  }, [formState, toast, form]);
+
 
   return (
     <section id="contact" className="container">
@@ -119,7 +119,12 @@ export default function Contact() {
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form 
+                  ref={formRef} 
+                  action={formAction}
+                  onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))} 
+                  className="space-y-6"
+                >
                   <FormField
                     control={form.control}
                     name="name"
@@ -172,8 +177,8 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" disabled={isPending}>
-                    {isPending ? 'Илгээж байна...' : 'Зурвас илгээх'}
+                  <Button type="submit">
+                    Илгээх
                   </Button>
                 </form>
               </Form>
