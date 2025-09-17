@@ -133,37 +133,33 @@ export default function ProjectsPage() {
 
     try {
       if (imageFile && imageFile.size > 0) {
-        imageUrl = await uploadImage(imageFile, `projects/${imageFile.name}`);
+        imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
-
-      const projectData = {
+      
+      const projectData: Partial<Project> = {
         title: formData.get('title') as string,
         category: formData.get('category') as string,
         imageUrl: imageUrl,
       };
       
-      if (!projectData.imageUrl && !currentProject) {
-        toast({
-            title: 'Алдаа',
-            description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
-            variant: 'destructive',
-        });
-        setIsSaving(false);
-        return;
-      }
-
-
       if (currentProject) {
         await updateProject(currentProject.id, projectData);
         toast({ title: 'Амжилттай', description: 'Төслийг шинэчиллээ.' });
       } else {
-         if (!projectData.imageUrl) {
-            throw new Error('Image is required for new projects.');
-         }
-        await addProject(projectData as Project);
+        if (!projectData.imageUrl) {
+            toast({
+                title: 'Алдаа',
+                description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
+                variant: 'destructive',
+            });
+            setIsSaving(false);
+            return;
+        }
+        await addProject(projectData as Omit<Project, 'id'>);
         toast({ title: 'Амжилттай', description: 'Шинэ төсөл нэмлээ.' });
       }
       setIsDialogOpen(false);
+      setCurrentProject(null);
       await fetchProjects(); // Refresh list
     } catch (error) {
       console.error('Failed to save project:', error);
