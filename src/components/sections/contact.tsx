@@ -9,7 +9,7 @@ import { useEffect, useRef, useActionState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Mail, MapPin, Phone } from 'lucide-react';
@@ -112,52 +112,47 @@ export default function Contact() {
 
         <div className="md:col-span-3">
           <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Бидэнд зурвас илгээх</CardTitle>
-              <CardDescription>Бүх талбарыг бөглөх шаардлагатай.</CardDescription>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <Form {...form}>
                 <form 
                   ref={formRef} 
                   action={formAction}
                   onSubmit={form.handleSubmit(() => formAction(new FormData(formRef.current!)))} 
-                  className="space-y-6"
+                  className="grid grid-cols-1 gap-4"
                 >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Овог, нэр</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Хонгилдон" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>И-мэйл хаяг</FormLabel>
-                        <FormControl>
-                          <Input placeholder="email@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="Таны нэр" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="Имэйл хаяг" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={form.control}
                     name="subject"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Гарчиг</FormLabel>
                         <FormControl>
-                          <Input placeholder="Миний шинэ төслийн талаар..." {...field} />
+                          <Input placeholder="Гарчиг" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -168,15 +163,14 @@ export default function Contact() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Зурвас</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Төсөл эсвэл хүсэлтийнхээ талаар бидэнд ярина уу." className="min-h-[120px]" {...field} />
+                          <Textarea placeholder="Таны зурвас" className="min-h-[150px]" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">
+                  <Button type="submit" className="w-full">
                     Илгээх
                   </Button>
                 </form>
