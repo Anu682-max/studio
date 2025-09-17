@@ -21,7 +21,7 @@ export type Project = {
 
 export type NewsArticle = {
   id: string;
-  title: string;
+  title:string;
   date: string; // ISO string
   summary: string;
   imagePlaceholderId: string;
@@ -65,7 +65,18 @@ const projectsCollection = collection(db, 'projects');
 
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  const projectsFromDb = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  
+  // Example project added for demonstration
+  const exampleProject: Project = {
+    id: 'example-project-1',
+    title: 'Орон сууцны барилга',
+    category: 'Бүтээн байгуулалт',
+    // Replace this URL with the actual public URL of your b.jpg image from Firebase Storage
+    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
+  };
+
+  return [exampleProject, ...projectsFromDb];
 };
 
 export const addProject = async (project: Omit<Project, 'id'>) => {
