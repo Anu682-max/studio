@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getProjects, type Project } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Carousel,
@@ -69,20 +68,18 @@ export default function Projects() {
       >
         <CarouselContent>
           {isLoading ? renderSkeleton() : projects.map((project) => {
-            const image = PlaceHolderImages.find(p => p.id === project.imagePlaceholderId);
             return (
               <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
                   <Card className="overflow-hidden group">
                     <CardContent className="p-0">
                       <div className="relative aspect-[3/2] w-full overflow-hidden">
-                        {image && (
+                        {project.imageUrl && (
                           <Image
-                            src={image.imageUrl}
+                            src={project.imageUrl}
                             alt={project.title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            data-ai-hint={image.imageHint}
                           />
                         )}
                       </div>

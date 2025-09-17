@@ -57,9 +57,9 @@ import {
   addProject,
   updateProject,
   deleteProject,
+  uploadImage,
   type Project,
 } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = React.useState<Project[]>([]);
@@ -127,18 +127,40 @@ export default function ProjectsPage() {
     e.preventDefault();
     setIsSaving(true);
     const formData = new FormData(e.currentTarget);
-    const projectData = {
-      title: formData.get('title') as string,
-      category: formData.get('category') as string,
-      imagePlaceholderId: 'project-1', // This should be dynamic in a real app
-    };
+    const imageFile = formData.get('image') as File;
+
+    let imageUrl = currentProject?.imageUrl || '';
 
     try {
+      if (imageFile && imageFile.size > 0) {
+        imageUrl = await uploadImage(imageFile, `projects/${imageFile.name}`);
+      }
+
+      const projectData = {
+        title: formData.get('title') as string,
+        category: formData.get('category') as string,
+        imageUrl: imageUrl,
+      };
+      
+      if (!projectData.imageUrl && !currentProject) {
+        toast({
+            title: 'Алдаа',
+            description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
+            variant: 'destructive',
+        });
+        setIsSaving(false);
+        return;
+      }
+
+
       if (currentProject) {
         await updateProject(currentProject.id, projectData);
         toast({ title: 'Амжилттай', description: 'Төслийг шинэчиллээ.' });
       } else {
-        await addProject(projectData);
+         if (!projectData.imageUrl) {
+            throw new Error('Image is required for new projects.');
+         }
+        await addProject(projectData as Project);
         toast({ title: 'Амжилттай', description: 'Шинэ төсөл нэмлээ.' });
       }
       setIsDialogOpen(false);
@@ -206,20 +228,16 @@ export default function ProjectsPage() {
           </TableHeader>
           <TableBody>
             {isLoading ? renderSkeleton() : projects.map((project) => {
-              const image = PlaceHolderImages.find(
-                (p) => p.id === project.imagePlaceholderId
-              );
               return (
                 <TableRow key={project.id}>
                   <TableCell className="hidden sm:table-cell">
-                    {image && (
+                    {project.imageUrl && (
                       <Image
                         alt={project.title}
                         className="aspect-square rounded-md object-cover"
                         height="64"
-                        src={image.imageUrl}
+                        src={project.imageUrl}
                         width="64"
-                        data-ai-hint={image.imageHint}
                       />
                     )}
                   </TableCell>
@@ -334,6 +352,27 @@ export default function ProjectsPage() {
                   required
                 />
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="image" className="text-right">
+                  Зураг
+                </Label>
+                <Input
+                  id="image"
+                  name="image"
+                  type="file"
+                  className="col-span-3"
+                  accept="image/*"
+                  required={!currentProject}
+                />
+              </div>
+               {currentProject?.imageUrl && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="col-start-2 col-span-3">
+                         <Image src={currentProject.imageUrl} alt="Current project image" width={100} height={100} className="rounded-md object-cover" />
+                         <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
+                    </div>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button

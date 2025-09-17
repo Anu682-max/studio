@@ -1,5 +1,6 @@
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query } from 'firebase/firestore';
-import { db } from './firebase/config';
+import { db, storage } from './firebase/config';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LucideIcon } from 'lucide-react';
 import { Building, Hammer, Home, DraftingCompass, PaintRoller, LandPlot } from 'lucide-react';
 
@@ -15,7 +16,7 @@ export type Project = {
   id: string;
   title: string;
   category: string;
-  imagePlaceholderId: string;
+  imageUrl: string;
 };
 
 export type NewsArticle = {
@@ -104,3 +105,11 @@ export const deleteNewsArticle = async (id: string) => {
   const articleDoc = doc(db, 'news', id);
   return await deleteDoc(articleDoc);
 };
+
+// Storage Functions
+export const uploadImage = async (file: File, path: string): Promise<string> => {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+}
