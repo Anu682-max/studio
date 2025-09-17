@@ -3,9 +3,9 @@
   "placeholderImages": [
     {
       "id": "hero-1",
-      "description": "A modern architectural building at dusk.",
-      "imageUrl": "https://picsum.photos/seed/hero1/1920/1080",
-      "imageHint": "modern architecture"
+      "description": "Skyscrapers viewed from below with a digital network overlay.",
+      "imageUrl": "https://picsum.photos/seed/hero2/1920/1080",
+      "imageHint": "skyscrapers network"
     },
     {
       "id": "about-1",
