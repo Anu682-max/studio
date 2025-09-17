@@ -128,33 +128,35 @@ export default function ProjectsPage() {
   const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-
+  
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
+    // Start with the existing image URL if we are editing.
     let imageUrl = currentProject?.imageUrl || '';
-
+  
     try {
+      // If a new file is selected, upload it and get the new URL.
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
-
+  
+      // If it's a new project and there's still no image URL, show an error.
       if (!imageUrl && !currentProject) {
         toast({
             title: 'Алдаа',
             description: 'Шинэ төсөлд зураг оруулах шаардлагатай.',
             variant: 'destructive',
         });
-        setIsSaving(false);
-        return;
+        return; // Return early
       }
       
       const projectData = {
         title: formData.get('title') as string,
         category: formData.get('category') as string,
         description: formData.get('description') as string,
-        imageUrl: imageUrl,
+        imageUrl: imageUrl, // Use the determined image URL
       };
-
+  
       if (currentProject) {
         await updateProject(currentProject.id, projectData);
         toast({ title: 'Амжилттай', description: 'Төслийг шинэчиллээ.' });
@@ -166,7 +168,7 @@ export default function ProjectsPage() {
       setIsDialogOpen(false);
       setCurrentProject(null);
       await fetchProjects();
-
+  
     } catch (error) {
       console.error('Failed to save project:', error);
       toast({
@@ -175,6 +177,7 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
+      // This will run regardless of success or failure.
       setIsSaving(false);
     }
   };
@@ -413,5 +416,3 @@ export default function ProjectsPage() {
     </Card>
   );
 }
-
-    
