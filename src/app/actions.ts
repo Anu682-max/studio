@@ -73,6 +73,8 @@ export async function submitContactForm(
         submittedAt: new Date(),
     });
     
+    // TODO: Re-enable this section after configuring the Firebase Trigger Email extension.
+    /*
     // Create an email document for the "Trigger Email" extension
     const mailDoc = {
       to: ['anulkhagvazaya5@gmail.com'],
@@ -97,6 +99,7 @@ export async function submitContactForm(
 
     // Add the document to the 'mail' collection to trigger the email
     await addDoc(collection(db, 'mail'), mailDoc);
+    */
 
     return {
       message: 'Таны зурвасыг амжилттай хүлээн авлаа. Бид тантай тун удахгүй холбогдох болно.',
@@ -105,7 +108,7 @@ export async function submitContactForm(
     };
 
   } catch (error) {
-    console.error("Error submitting contact form or triggering email:", error);
+    console.error("Error submitting contact form:", error);
     return {
       message: 'Зурвас илгээхэд тодорхойгүй алдаа гарлаа. Дахин оролдоно уу.',
       success: false,
