@@ -133,8 +133,20 @@ export default function ProjectsPage() {
     try {
       let imageUrl = currentProject?.imageUrl || '';
       
+      // Only upload if a new file is selected
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
+      }
+
+      // For new projects, an image is required
+      if (!currentProject && !imageUrl) {
+        toast({
+            title: 'Алдаа',
+            description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
+            variant: 'destructive',
+        });
+        // Important: Stop execution if no image for a new project
+        return; 
       }
 
       const projectData = {
@@ -147,15 +159,6 @@ export default function ProjectsPage() {
         await updateProject(currentProject.id, projectData);
         toast({ title: 'Амжилттай', description: 'Төслийг шинэчиллээ.' });
       } else {
-        if (!projectData.imageUrl) {
-            toast({
-                title: 'Алдаа',
-                description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
-                variant: 'destructive',
-            });
-            // Stop execution if no image for a new project
-            return; 
-        }
         await addProject(projectData as Omit<Project, 'id'>);
         toast({ title: 'Амжилттай', description: 'Шинэ төсөл нэмлээ.' });
       }
@@ -322,17 +325,17 @@ export default function ProjectsPage() {
         }
       }}>
         <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {currentProject ? 'Төсөл засах' : 'Төсөл нэмэх'}
+            </DialogTitle>
+            <DialogDescription>
+              {currentProject
+                ? 'Төслийнхөө мэдээллийг шинэчлэх.'
+                : 'Багцдаа шинэ төсөл нэмэх.'}
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSaveProject}>
-            <DialogHeader>
-              <DialogTitle>
-                {currentProject ? 'Төсөл засах' : 'Төсөл нэмэх'}
-              </DialogTitle>
-              <DialogDescription>
-                {currentProject
-                  ? 'Төслийнхөө мэдээллийг шинэчлэх.'
-                  : 'Багцдаа шинэ төсөл нэмэх.'}
-              </DialogDescription>
-            </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">

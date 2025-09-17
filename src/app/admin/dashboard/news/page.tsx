@@ -255,13 +255,13 @@ export default function NewsPage() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{currentArticle ? 'Нийтлэл засах' : 'Нийтлэл нэмэх'}</DialogTitle>
+            <DialogDescription>
+              {currentArticle ? 'Энэ нийтлэлийн мэдээллийг шинэчлэх.' : 'Шинэ нийтлэл нэмэх.'}
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSaveArticle}>
-            <DialogHeader>
-              <DialogTitle>{currentArticle ? 'Нийтлэл засах' : 'Нийтлэл нэмэх'}</DialogTitle>
-              <DialogDescription>
-                {currentArticle ? 'Энэ нийтлэлийн мэдээллийг шинэчлэх.' : 'Шинэ нийтлэл нэмэх.'}
-              </DialogDescription>
-            </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">

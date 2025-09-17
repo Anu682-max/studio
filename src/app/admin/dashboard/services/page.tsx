@@ -284,17 +284,17 @@ export default function ServicesPage() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {currentService ? 'Үйлчилгээ засах' : 'Үйлчилгээ нэмэх'}
+            </DialogTitle>
+            <DialogDescription>
+              {currentService
+                ? 'Энэ үйлчилгээний мэдээллийг шинэчлэх.'
+                : 'Компанийнхаа санал болгож буй шинэ үйлчилгээ нэмэх.'}
+            </DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSaveService}>
-            <DialogHeader>
-              <DialogTitle>
-                {currentService ? 'Үйлчилгээ засах' : 'Үйлчилгээ нэмэх'}
-              </DialogTitle>
-              <DialogDescription>
-                {currentService
-                  ? 'Энэ үйлчилгээний мэдээллийг шинэчлэх.'
-                  : 'Компанийнхаа санал болгож буй шинэ үйлчилгээ нэмэх.'}
-              </DialogDescription>
-            </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">
