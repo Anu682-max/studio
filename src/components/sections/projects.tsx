@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getProjects, type Project } from '@/lib/data';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import {
   Carousel,
   CarouselContent,
@@ -41,6 +41,7 @@ export default function Projects() {
                <Skeleton className="aspect-[3/2] w-full" />
               <div className="p-4 bg-card">
                 <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
                 <Skeleton className="h-5 w-1/4" />
               </div>
             </CardContent>
@@ -71,8 +72,8 @@ export default function Projects() {
             return (
               <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <Card className="overflow-hidden group">
-                    <CardContent className="p-0">
+                  <Card className="overflow-hidden group flex flex-col h-full">
+                    <CardContent className="p-0 flex flex-col flex-grow">
                       <div className="relative aspect-[3/2] w-full overflow-hidden">
                         {project.imageUrl && (
                           <Image
@@ -83,9 +84,14 @@ export default function Projects() {
                           />
                         )}
                       </div>
-                      <div className="p-4 bg-card">
+                      <div className="p-4 bg-card flex flex-col flex-grow">
                         <h3 className="font-semibold text-lg font-headline">{project.title}</h3>
-                        <Badge variant="secondary" className="mt-2">{project.category}</Badge>
+                        {project.description && (
+                          <CardDescription className="mt-2 text-sm text-muted-foreground flex-grow">
+                            {project.description}
+                          </CardDescription>
+                        )}
+                        <Badge variant="secondary" className="mt-4 self-start">{project.category}</Badge>
                       </div>
                     </CardContent>
                   </Card>

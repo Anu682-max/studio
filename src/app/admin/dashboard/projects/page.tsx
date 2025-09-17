@@ -52,6 +52,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 
 import {
   getProjects,
@@ -130,28 +131,27 @@ export default function ProjectsPage() {
 
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
+    let imageUrl = currentProject?.imageUrl || '';
 
     try {
-      let imageUrl = currentProject?.imageUrl || '';
-
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
 
-      // Ensure new projects have an image
-      if (!currentProject && !imageUrl) {
+      if (!imageUrl && !currentProject) {
         toast({
             title: 'Алдаа',
-            description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
+            description: 'Шинэ төсөлд зураг оруулах шаардлагатай.',
             variant: 'destructive',
         });
-        // Important: Stop execution if no image for a new project
-        return; 
+        setIsSaving(false);
+        return;
       }
-
+      
       const projectData = {
         title: formData.get('title') as string,
         category: formData.get('category') as string,
+        description: formData.get('description') as string,
         imageUrl: imageUrl,
       };
 
@@ -175,7 +175,6 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
-      // This will now correctly run regardless of success or failure
       setIsSaving(false);
     }
   };
@@ -360,6 +359,17 @@ export default function ProjectsPage() {
                   defaultValue={currentProject?.category}
                   className="col-span-3"
                   required
+                />
+              </div>
+               <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-right">
+                  Тайлбар
+                </Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  defaultValue={currentProject?.description}
+                  className="col-span-3"
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">

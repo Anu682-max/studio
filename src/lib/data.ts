@@ -17,6 +17,7 @@ export type Project = {
   title: string;
   category: string;
   imageUrl: string;
+  description?: string;
 };
 
 export type NewsArticle = {
@@ -72,6 +73,7 @@ export const getProjects = async (): Promise<Project[]> => {
     id: 'example-project-1',
     title: 'Орон сууцны барилга',
     category: 'Бүтээн байгуулалт',
+    description: 'Энэ бол орчин үеийн, тав тухтай орон сууцны цогцолбор бөгөөд хотын төвд байрладаг. Оршин суугчдынхаа хэрэгцээнд нийцүүлэн төлөвлөсөн.',
     // This is the public URL for b.jpg
     imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
   };
