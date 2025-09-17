@@ -67,8 +67,20 @@ const projectsCollection = collection(db, 'projects');
 
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  
+  // Add the hardcoded project back
+  const hardcodedProject: Project = {
+    id: 'hardcoded-1',
+    title: 'Орон сууцны барилга',
+    category: 'Орон сууц',
+    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
+    description: 'Энэ бол Улаанбаатар хотод байрлах орчин үеийн орон сууцны барилгын төсөл юм.'
+  };
+
+  return [hardcodedProject, ...firestoreProjects];
 };
+
 
 export const addProject = async (project: Omit<Project, 'id'>) => {
   return await addDoc(projectsCollection, project);
