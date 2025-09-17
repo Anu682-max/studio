@@ -47,6 +47,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -133,19 +134,17 @@ export default function ProjectsPage() {
     try {
       let imageUrl = currentProject?.imageUrl || '';
       
-      // Only upload if a new file is selected
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
 
-      // For new projects, an image is required
       if (!currentProject && !imageUrl) {
         toast({
             title: 'Алдаа',
             description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
             variant: 'destructive',
         });
-        // Important: Stop execution if no image for a new project
+        setIsSaving(false); 
         return; 
       }
 
@@ -165,7 +164,7 @@ export default function ProjectsPage() {
       
       setIsDialogOpen(false);
       setCurrentProject(null);
-      await fetchProjects(); // Refresh list
+      await fetchProjects();
     } catch (error) {
       console.error('Failed to save project:', error);
       toast({
@@ -174,7 +173,6 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
-      // This is crucial: ensure isSaving is always reset
       setIsSaving(false);
     }
   };
