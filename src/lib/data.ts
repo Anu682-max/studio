@@ -69,7 +69,6 @@ export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
   const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
   
-  // Add the hardcoded project back
   const hardcodedProject: Project = {
     id: 'hardcoded-1',
     title: 'Орон сууцны барилга',
@@ -86,12 +85,20 @@ export const addProject = async (project: Omit<Project, 'id'>) => {
   return await addDoc(projectsCollection, project);
 };
 
-export const updateProject = async (id: string, project: Partial<Project>) => {
+export const updateProject = async (id: string, project: Partial<Omit<Project, 'id'>>) => {
+  if (id === 'hardcoded-1') {
+    console.log("Cannot update hardcoded project.");
+    return;
+  }
   const projectDoc = doc(db, 'projects', id);
   return await updateDoc(projectDoc, project);
 };
 
 export const deleteProject = async (id: string) => {
+  if (id === 'hardcoded-1') {
+    console.log("Cannot delete hardcoded project.");
+    return;
+  }
   const projectDoc = doc(db, 'projects', id);
   return await deleteDoc(projectDoc);
 };
