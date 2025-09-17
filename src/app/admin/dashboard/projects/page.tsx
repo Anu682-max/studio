@@ -388,7 +388,7 @@ export default function ProjectsPage() {
                {currentProject?.imageUrl && (
                 <div className="grid grid-cols-4 items-center gap-4">
                     <div className="col-start-2 col-span-3">
-                         <Image src={currentProject.imageUrl} alt="Current project image" width={100} height={100} className="rounded-md object-cover" />
+                         <Image src={currentProject.imageUrl} alt="Current project image" width={200} height={200} className="rounded-md object-cover" />
                          <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
                     </div>
                 </div>
@@ -413,3 +413,5 @@ export default function ProjectsPage() {
     </Card>
   );
 }
+
+    
