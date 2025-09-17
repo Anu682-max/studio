@@ -153,7 +153,8 @@ export default function ProjectsPage() {
                 description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
                 variant: 'destructive',
             });
-            return;
+            // Stop execution if no image for a new project
+            return; 
         }
         await addProject(projectData as Omit<Project, 'id'>);
         toast({ title: 'Амжилттай', description: 'Шинэ төсөл нэмлээ.' });
@@ -170,6 +171,7 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
+      // This is crucial: ensure isSaving is always reset
       setIsSaving(false);
     }
   };
