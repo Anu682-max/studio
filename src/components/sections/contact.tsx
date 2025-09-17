@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { submitContactForm, type ContactFormState } from '@/app/actions';
-import { useFormState } from 'react-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useActionState } from 'react';
 
 
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ const initialState: ContactFormState = {
 
 export default function Contact() {
   const { toast } = useToast();
-  const [formState, formAction] = useFormState(submitContactForm, initialState);
+  const [formState, formAction] = useActionState(submitContactForm, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   
   const form = useForm<ContactFormValues>({
