@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getServices, type Service, iconMap } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Building } from 'lucide-react';
 
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
@@ -32,10 +33,10 @@ export default function Services() {
                 </div>
                 <Skeleton className="h-6 w-32" />
             </CardHeader>
-            <CardDescription className="px-6 pb-6">
+            <div className="px-6 pb-6 text-sm text-muted-foreground">
                 <Skeleton className="h-4 w-full mb-2" />
                 <Skeleton className="h-4 w-5/6" />
-            </CardDescription>
+            </div>
         </Card>
      ))
   );
@@ -51,7 +52,7 @@ export default function Services() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? renderSkeleton() : services.map((service, index) => {
-            const Icon = iconMap[service.icon] || iconMap['Building'];
+            const Icon = (service.icon && iconMap[service.icon]) || Building;
             return (
                <Card key={service.id || index} className="flex flex-col text-center items-center hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
