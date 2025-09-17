@@ -62,11 +62,41 @@ export async function submitContactForm(
   }
   
   try {
-    const contactData = {
-        ...validatedFields.data,
+    const { name, email, subject, message } = validatedFields.data;
+
+    // Save the original contact message to a 'contacts' collection for record keeping
+    await addDoc(collection(db, 'contacts'), {
+        name,
+        email,
+        subject,
+        message,
         submittedAt: new Date(),
+    });
+    
+    // Create an email document for the "Trigger Email" extension
+    const mailDoc = {
+      to: ['anulkhagvazaya5@gmail.com'],
+      message: {
+        subject: `Шинэ холбоо барих хүсэлт: ${subject}`,
+        text: `Таны вэбсайтаас шинэ зурвас ирлээ.\n\n
+Нэр: ${name}\n
+И-мэйл: ${email}\n
+Гарчиг: ${subject}\n
+Зурвас:\n${message}\n\n
+Энэ имэйл автоматаар үүсгэгдсэн.`,
+        html: `<p>Таны вэбсайтаас шинэ зурвас ирлээ.</p>
+               <p><strong>Нэр:</strong> ${name}</p>
+               <p><strong>И-мэйл:</strong> ${email}</p>
+               <p><strong>Гарчиг:</strong> ${subject}</p>
+               <p><strong>Зурвас:</strong></p>
+               <p>${message}</p>
+               <hr>
+               <p>Энэ имэйл автоматаар үүсгэгдсэн.</p>`,
+      },
     };
-    await addDoc(collection(db, 'contacts'), contactData);
+
+    // Add the document to the 'mail' collection to trigger the email
+    await addDoc(collection(db, 'mail'), mailDoc);
 
     return {
       message: 'Таны зурвасыг амжилттай хүлээн авлаа. Бид тантай тун удахгүй холбогдох болно.',
@@ -75,7 +105,7 @@ export async function submitContactForm(
     };
 
   } catch (error) {
-    console.error("Error submitting contact form:", error);
+    console.error("Error submitting contact form or triggering email:", error);
     return {
       message: 'Зурвас илгээхэд тодорхойгүй алдаа гарлаа. Дахин оролдоно уу.',
       success: false,
