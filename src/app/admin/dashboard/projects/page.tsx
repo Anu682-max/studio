@@ -127,24 +127,25 @@ export default function ProjectsPage() {
   const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    
+
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
 
     try {
       let imageUrl = currentProject?.imageUrl || '';
-      
+
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
 
+      // Ensure new projects have an image
       if (!currentProject && !imageUrl) {
         toast({
             title: 'Алдаа',
             description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
             variant: 'destructive',
         });
-        setIsSaving(false); 
+        // Important: Stop execution if no image for a new project
         return; 
       }
 
@@ -165,6 +166,7 @@ export default function ProjectsPage() {
       setIsDialogOpen(false);
       setCurrentProject(null);
       await fetchProjects();
+
     } catch (error) {
       console.error('Failed to save project:', error);
       toast({
@@ -173,6 +175,7 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
+      // This will now correctly run regardless of success or failure
       setIsSaving(false);
     }
   };

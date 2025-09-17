@@ -72,7 +72,7 @@ export const getProjects = async (): Promise<Project[]> => {
     id: 'example-project-1',
     title: 'Орон сууцны барилга',
     category: 'Бүтээн байгуулалт',
-    // Replace this URL with the actual public URL of your b.jpg image from Firebase Storage
+    // This is the public URL for b.jpg
     imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
   };
 
