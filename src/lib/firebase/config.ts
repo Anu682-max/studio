@@ -6,7 +6,7 @@ import { getStorage } from 'firebase/storage';
 const firebaseConfig = {
   "projectId": "studio-3378510862-a72aa",
   "appId": "1:185419459053:web:1522e04ffa46c63fa81fe4",
-  "storageBucket": "studio-3378510862-a72aa.appspot.com",
+  "storageBucket": "https://console.firebase.google.com/project/studio-3378510862-a72aa.firebasestorage.app/",
   "apiKey": "AIzaSyD_4xuoLFA2FlqPioQ_DTi7V-lvrm5tTew",
   "authDomain": "studio-3378510862-a72aa.firebaseapp.com",
   "measurementId": "",

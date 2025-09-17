@@ -126,6 +126,7 @@ export default function ProjectsPage() {
   const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
+    
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
 
@@ -152,7 +153,6 @@ export default function ProjectsPage() {
                 description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
                 variant: 'destructive',
             });
-            setIsSaving(false); // Make sure to stop saving state
             return;
         }
         await addProject(projectData as Omit<Project, 'id'>);
