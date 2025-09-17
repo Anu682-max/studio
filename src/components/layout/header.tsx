@@ -3,7 +3,14 @@
 import Link from 'next/link';
 import { Menu, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { Icons } from '@/components/icons';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -56,6 +63,10 @@ export default function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetHeader>
+                   <SheetTitle className="sr-only">Үндсэн цэс</SheetTitle>
+                   <SheetDescription className="sr-only">Сайтын үндсэн навигацийн холбоосууд.</SheetDescription>
+                </SheetHeader>
                 <div className="flex flex-col h-full py-6">
                   <Link href="/" className="mb-8 flex items-center" onClick={() => setMobileMenuOpen(false)}>
                     <Icons.Logo className="mr-2" />
