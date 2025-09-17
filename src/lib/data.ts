@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db, storage } from './firebase/config';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LucideIcon } from 'lucide-react';
@@ -43,7 +43,8 @@ export const iconMap: { [key: string]: LucideIcon } = {
 const servicesCollection = collection(db, 'services');
 
 export const getServices = async (): Promise<Service[]> => {
-  const snapshot = await getDocs(servicesCollection);
+  const q = query(servicesCollection, orderBy('title'));
+  const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Service));
 };
 
@@ -66,19 +67,7 @@ const projectsCollection = collection(db, 'projects');
 
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
-  const projectsFromDb = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-  
-  // Example project added for demonstration
-  const exampleProject: Project = {
-    id: 'example-project-1',
-    title: 'Орон сууцны барилга',
-    category: 'Бүтээн байгуулалт',
-    description: 'Энэ бол орчин үеийн, тав тухтай орон сууцны цогцолбор бөгөөд хотын төвд байрладаг. Оршин суугчдынхаа хэрэгцээнд нийцүүлэн төлөвлөсөн.',
-    // This is the public URL for b.jpg
-    imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
-  };
-
-  return [exampleProject, ...projectsFromDb];
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
 };
 
 export const addProject = async (project: Omit<Project, 'id'>) => {
@@ -100,7 +89,7 @@ export const deleteProject = async (id: string) => {
 const newsCollection = collection(db, 'news');
 
 export const getNews = async (): Promise<NewsArticle[]> => {
-    const q = query(collection(db, "news"));
+    const q = query(collection(db, "news"), orderBy('date', 'desc'));
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as NewsArticle));
 };
