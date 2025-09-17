@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Phone } from 'lucide-react';
 
 export default function Hero() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-1');
@@ -30,8 +31,11 @@ export default function Hero() {
           <Button size="lg" asChild>
             <Link href="#projects">Манай төслүүд</Link>
           </Button>
-          <Button size="lg" variant="secondary" asChild>
-            <Link href="#contact">Холбоо барих</Link>
+          <Button size="lg" variant="outline" asChild className="bg-transparent hover:bg-white/10 border-white text-white hover:text-white">
+            <Link href="#contact">
+              <Phone className="mr-2 h-5 w-5" />
+              Холбоо барих
+            </Link>
           </Button>
         </div>
       </div>
