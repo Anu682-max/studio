@@ -129,19 +129,19 @@ export default function ProjectsPage() {
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
 
-    let imageUrl = currentProject?.imageUrl || '';
-
     try {
+      let imageUrl = currentProject?.imageUrl || '';
+      
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
-      
-      const projectData: Partial<Project> = {
+
+      const projectData = {
         title: formData.get('title') as string,
         category: formData.get('category') as string,
         imageUrl: imageUrl,
       };
-      
+
       if (currentProject) {
         await updateProject(currentProject.id, projectData);
         toast({ title: 'Амжилттай', description: 'Төслийг шинэчиллээ.' });
