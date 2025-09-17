@@ -152,12 +152,13 @@ export default function ProjectsPage() {
                 description: 'Шинэ төсөл нэмэхдээ зураг оруулах шаардлагатай.',
                 variant: 'destructive',
             });
-            setIsSaving(false);
+            setIsSaving(false); // Make sure to stop saving state
             return;
         }
         await addProject(projectData as Omit<Project, 'id'>);
         toast({ title: 'Амжилттай', description: 'Шинэ төсөл нэмлээ.' });
       }
+      
       setIsDialogOpen(false);
       setCurrentProject(null);
       await fetchProjects(); // Refresh list
@@ -310,7 +311,14 @@ export default function ProjectsPage() {
         </div>
       </CardFooter>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
+        if (!isSaving) {
+            setIsDialogOpen(isOpen);
+            if (!isOpen) {
+                setCurrentProject(null);
+            }
+        }
+      }}>
         <DialogContent className="sm:max-w-[425px]">
           <form onSubmit={handleSaveProject}>
             <DialogHeader>
