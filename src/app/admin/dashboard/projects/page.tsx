@@ -131,30 +131,28 @@ export default function ProjectsPage() {
   
     const formData = new FormData(e.currentTarget);
     const imageFile = formData.get('image') as File;
-    // Start with the existing image URL if we are editing.
     let imageUrl = currentProject?.imageUrl || '';
   
     try {
-      // If a new file is selected, upload it and get the new URL.
       if (imageFile && imageFile.size > 0) {
         imageUrl = await uploadImage(imageFile, `projects/${Date.now()}_${imageFile.name}`);
       }
-  
-      // If it's a new project and there's still no image URL, show an error.
+      
       if (!imageUrl && !currentProject) {
         toast({
             title: 'Алдаа',
             description: 'Шинэ төсөлд зураг оруулах шаардлагатай.',
             variant: 'destructive',
         });
-        return; // Return early
+        setIsSaving(false);
+        return;
       }
       
       const projectData = {
         title: formData.get('title') as string,
         category: formData.get('category') as string,
         description: formData.get('description') as string,
-        imageUrl: imageUrl, // Use the determined image URL
+        imageUrl: imageUrl, 
       };
   
       if (currentProject) {
@@ -177,7 +175,6 @@ export default function ProjectsPage() {
         variant: 'destructive',
       });
     } finally {
-      // This will run regardless of success or failure.
       setIsSaving(false);
     }
   };
@@ -391,7 +388,7 @@ export default function ProjectsPage() {
                {currentProject?.imageUrl && (
                 <div className="grid grid-cols-4 items-center gap-4">
                     <div className="col-start-2 col-span-3">
-                         <Image src={currentProject.imageUrl} alt="Current project image" width={200} height={200} className="rounded-md object-cover" />
+                         <img src={currentProject.imageUrl} alt="Current project image" width={200} height={200} className="rounded-md object-cover" />
                          <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
                     </div>
                 </div>
