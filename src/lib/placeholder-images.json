@@ -5,12 +5,12 @@
       "id": "hero-1",
       "description": "Modern residential building project.",
       "imageUrl": "https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8",
-      "imageHint": "modern building"
+      "imageHint": "skyscrapers network"
     },
     {
       "id": "about-1",
       "description": "A construction worker reviewing blueprints on a sunlit construction site.",
-      "imageUrl": "https://picsum.photos/seed/about1/800/600",
+      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8",
       "imageHint": "construction blueprints"
     },
     {
