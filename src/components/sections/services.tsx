@@ -57,8 +57,8 @@ export default function Services() {
                <Card key={service.id || index} className="flex flex-col text-center items-center hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                   <div className="flex justify-center items-center mb-4">
-                    <div className="p-4 bg-accent/20 rounded-full">
-                      <Icon className="h-8 w-8 text-accent" />
+                    <div className="p-4 bg-primary/10 rounded-full">
+                      <Icon className="h-8 w-8 text-primary" />
                     </div>
                   </div>
                   <CardTitle className="font-headline">{service.title}</CardTitle>

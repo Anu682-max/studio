@@ -2,7 +2,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy 
 import { db, storage } from './firebase/config';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LucideIcon } from 'lucide-react';
-import { Building, Hammer, Home, DraftingCompass, PaintRoller, LandPlot } from 'lucide-react';
+import { Building, Hammer, Home, DraftingCompass, PaintRoller, LandPlot, ClipboardCheck, Wrench } from 'lucide-react';
 
 // Types
 export type Service = {
@@ -36,6 +36,8 @@ export const iconMap: { [key: string]: LucideIcon } = {
   Home,
   PaintRoller,
   LandPlot,
+  ClipboardCheck,
+  Wrench,
 };
 
 const hardcodedServices: Omit<Service, 'id'>[] = [
@@ -47,7 +49,7 @@ const hardcodedServices: Omit<Service, 'id'>[] = [
   {
     title: 'Барилгын удирдлага',
     description: 'Төслийн төлөвлөлт, зохицуулалт, хяналтыг эхнээс нь дуустал мэргэжлийн түвшинд гүйцэтгэнэ.',
-    icon: 'Hammer',
+    icon: 'ClipboardCheck',
   },
   {
     title: 'Зураг төсөл, барилга',
@@ -57,7 +59,7 @@ const hardcodedServices: Omit<Service, 'id'>[] = [
   {
     title: 'Засвар, шинэчлэлт',
     description: 'Хуучин барилгыг орчин үеийн шаардлагад нийцүүлэн, шинэ амь оруулна.',
-    icon: 'PaintRoller',
+    icon: 'Wrench',
   },
     {
     title: 'Барилгын өмнөх зөвлөгөө',
