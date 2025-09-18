@@ -45,9 +45,9 @@ export default function Services() {
     <section id="services" className="bg-secondary">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-headline">Бидний туршлага</h2>
+          <h2 className="text-3xl md:text-4xl font-bold font-headline">Манай Үйлчилгээ</h2>
           <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Бид таны алсын харааг бодит болгохын тулд барилгын иж бүрэн үйлчилгээг үзүүлдэг.
+            Төсөөллөөс бодит байдал хүртэл. Бид таны алсын харааг бодит болгохын тулд барилгын иж бүрэн, мэргэжлийн үйлчилгээг санал болгож байна.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -72,7 +72,7 @@ export default function Services() {
         </div>
          {!isLoading && services.length === 0 && (
           <div className="text-center p-8 text-muted-foreground">
-              Үйлчилгээний мэдээлэл одоогоор байхгүй байна.
+              Үйлчилгээний мэдээлэл одоогоор байхгүй байна. Удирдлагын самбараас нэмнэ үү.
           </div>
         )}
       </div>

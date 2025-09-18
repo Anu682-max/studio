@@ -38,6 +38,39 @@ export const iconMap: { [key: string]: LucideIcon } = {
   LandPlot,
 };
 
+const hardcodedServices: Omit<Service, 'id'>[] = [
+  {
+    title: 'Ерөнхий гүйцэтгэл',
+    description: 'Төслийн бүх үе шатыг удирдан, чанарын хяналт, төсөв, хуваарийг чанд мөрдөнө.',
+    icon: 'Building',
+  },
+  {
+    title: 'Барилгын удирдлага',
+    description: 'Төслийн төлөвлөлт, зохицуулалт, хяналтыг эхнээс нь дуустал мэргэжлийн түвшинд гүйцэтгэнэ.',
+    icon: 'Hammer',
+  },
+  {
+    title: 'Зураг төсөл, барилга',
+    description: 'Зураг төслийн багийг нэгтгэн, уялдаа холбоотой, үр ашигтай ажлын урсгалыг бий болгоно.',
+    icon: 'DraftingCompass',
+  },
+  {
+    title: 'Засвар, шинэчлэлт',
+    description: 'Хуучин барилгыг орчин үеийн шаардлагад нийцүүлэн, шинэ амь оруулна.',
+    icon: 'PaintRoller',
+  },
+    {
+    title: 'Барилгын өмнөх зөвлөгөө',
+    description: 'Төслийн эхний шатанд нарийвчилсан төлөвлөлт, төсөвлөлт хийж, эрсдэлийг бууруулна.',
+    icon: 'Home',
+  },
+  {
+    title: 'Газар шорооны ажил',
+    description: 'Барилгын суурийг бэлтгэх, газрын тэгшилгээ, ухах, тээвэрлэх ажлыг иж бүрнээр нь гүйцэтгэнэ.',
+    icon: 'LandPlot',
+  },
+];
+
 
 // Service Functions
 const servicesCollection = collection(db, 'services');
@@ -45,7 +78,17 @@ const servicesCollection = collection(db, 'services');
 export const getServices = async (): Promise<Service[]> => {
   const q = query(servicesCollection, orderBy('title'));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Service));
+  const services = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Service));
+  
+  if (services.length === 0) {
+      for (const service of hardcodedServices) {
+          await addService(service);
+      }
+      const newSnapshot = await getDocs(q);
+      return newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Service));
+  }
+
+  return services;
 };
 
 export const addService = async (service: Omit<Service, 'id'>) => {
@@ -78,8 +121,11 @@ const hardcodedProject: Project = {
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
   const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-  // We prepend the hardcoded project to the array from Firestore.
-  return [hardcodedProject, ...firestoreProjects];
+  
+  const allProjects = [hardcodedProject, ...firestoreProjects];
+  const uniqueProjects = Array.from(new Map(allProjects.map(p => [p.id, p])).values());
+  
+  return uniqueProjects;
 };
 
 
@@ -98,7 +144,7 @@ export const updateProject = async (id: string, project: Partial<Omit<Project, '
   return await updateDoc(projectDoc, project);
 };
 
-export const deleteProject = async (id: string) => {
+export const deleteProject = async (id:string) => {
   if (id === 'hardcoded-1') {
     console.log("Cannot delete the hardcoded project.");
     return;
