@@ -116,7 +116,6 @@ export const getProjects = async (): Promise<Project[]> => {
   const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
   
   if (firestoreProjects.length === 0) {
-      // Add a hardcoded project if there are no projects in Firestore
       const defaultProject = {
           title: "Хотын төвийн оффисын цамхаг",
           category: "Арилжааны",
