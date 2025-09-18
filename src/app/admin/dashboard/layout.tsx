@@ -73,8 +73,8 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+    <div className="flex min-h-screen w-full flex-col bg-background">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-card sm:flex">
         <TooltipProvider>
           <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
             <Link
@@ -89,7 +89,7 @@ export default function DashboardLayout({
                 <TooltipTrigger asChild>
                   <Link
                     href={item.href}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8 ${pathname === item.href ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8 ${pathname === item.href ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
                   >
                     <item.icon className="h-5 w-5" />
                     <span className="sr-only">{item.label}</span>
@@ -117,11 +117,9 @@ export default function DashboardLayout({
           </nav>
         </TooltipProvider>
       </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            {children}
-        </main>
-      </div>
+      <main className="flex flex-1 flex-col gap-4 p-4 sm:pl-14 md:gap-8 md:p-8">
+          {children}
+      </main>
     </div>
   );
 }

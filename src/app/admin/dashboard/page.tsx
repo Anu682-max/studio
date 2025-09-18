@@ -42,7 +42,7 @@ export default function Dashboard() {
   }, []);
 
   const renderStatCard = (title: string, value: number, icon: React.ReactNode, description: string) => (
-     <Card>
+     <Card className="bg-card">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
             {icon}
@@ -61,14 +61,14 @@ export default function Dashboard() {
   )
 
   return (
-    <div className="flex flex-col gap-4">
+    <>
       <h1 className="text-2xl font-headline font-semibold">ABS Барилга Хяналтын самбарт тавтай морил</h1>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
        {renderStatCard("Нийт төсөл", projectCount, <Building className="h-4 w-4 text-muted-foreground" />, "танилцуулсан төслүүд")}
        {renderStatCard("Санал болгож буй үйлчилгээ", serviceCount, <Construction className="h-4 w-4 text-muted-foreground" />, "бүртгэгдсэн үйлчилгээ")}
        {renderStatCard("Мэдээний нийтлэл", newsCount, <Newspaper className="h-4 w-4 text-muted-foreground" />, "нийтлэгдсэн нийтлэл")}
       </div>
-      <Card>
+      <Card className="bg-card">
         <CardHeader>
             <CardTitle className="font-headline">Шуурхай үйлдэл</CardTitle>
             <CardDescription>Контент удирдлагын хэсгүүд рүү хурдан шилжих.</CardDescription>
@@ -85,6 +85,6 @@ export default function Dashboard() {
             </Link>
         </CardContent>
        </Card>
-    </div>
+    </>
   );
 }

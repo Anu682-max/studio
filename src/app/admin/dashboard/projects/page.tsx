@@ -199,11 +199,11 @@ export default function ProjectsPage() {
   );
 
   return (
-    <Card>
+    <Card className="bg-card">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Төслүүд</CardTitle>
+            <CardTitle className="font-headline">Төслүүд</CardTitle>
             <CardDescription>Компанийнхаа төслүүдийг удирдах.</CardDescription>
           </div>
           <Button size="sm" className="gap-1" onClick={handleAddProject}>

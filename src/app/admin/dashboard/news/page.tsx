@@ -195,11 +195,11 @@ export default function NewsPage() {
   );
 
   return (
-    <Card>
+    <Card className="bg-card">
       <CardHeader>
         <div className="flex items-center justify-between">
             <div>
-                <CardTitle>Мэдээний нийтлэл</CardTitle>
+                <CardTitle className="font-headline">Мэдээний нийтлэл</CardTitle>
                 <CardDescription>
                     Компанийнхаа мэдээ, зарлалыг удирдах.
                 </CardDescription>

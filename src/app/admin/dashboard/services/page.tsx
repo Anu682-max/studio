@@ -180,11 +180,11 @@ export default function ServicesPage() {
   );
 
   return (
-    <Card>
+    <Card className="bg-card">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Үйлчилгээ</CardTitle>
+            <CardTitle className="font-headline">Үйлчилгээ</CardTitle>
             <CardDescription>
               Компанийнхаа санал болгодог үйлчилгээг удирдах.
             </CardDescription>
