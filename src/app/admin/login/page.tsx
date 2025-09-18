@@ -113,12 +113,6 @@ export default function LoginPage() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Нууц үг</Label>
-                <Link
-                  href="#"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Нууц үгээ мартсан уу?
-                </Link>
               </div>
               <Input 
                 id="password" 

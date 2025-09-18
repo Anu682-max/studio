@@ -77,11 +77,6 @@ export default function News() {
                 <CardContent className="flex-grow">
                   <CardDescription>{article.summary}</CardDescription>
                 </CardContent>
-                <div className="p-6 pt-0">
-                  <Button variant="link" asChild className="p-0 h-auto">
-                    <Link href="#">Дэлгэрэнгүй</Link>
-                  </Button>
-                </div>
               </Card>
             );
           })}
