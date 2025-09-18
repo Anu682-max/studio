@@ -3,14 +3,14 @@
   "placeholderImages": [
     {
       "id": "hero-1",
-      "description": "Modern residential building project.",
-      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8",
+      "description": "Skyscrapers viewed from below with a digital network overlay.",
+      "imageUrl": "https://storage.googleapis.com/aai-web-samples/nextjs/barilga/hero.jpg",
       "imageHint": "skyscrapers network"
     },
     {
       "id": "about-1",
       "description": "A construction worker reviewing blueprints on a sunlit construction site.",
-      "imageUrl": "https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8",
+      "imageUrl": "https://images.unsplash.com/photo-1541888946425-d81bb1924095?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "construction blueprints"
     },
     {
