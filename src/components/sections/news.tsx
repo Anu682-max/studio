@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getNews, type NewsArticle } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -59,17 +58,15 @@ export default function News() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? renderSkeleton() : news.map((article) => {
-            const image = PlaceHolderImages.find(p => p.id === article.imagePlaceholderId);
             return (
               <Card key={article.id} className="flex flex-col overflow-hidden">
-                {image && (
+                {article.imageUrl && (
                   <div className="relative aspect-[4/3] w-full">
                     <Image
-                      src={image.imageUrl}
+                      src={article.imageUrl}
                       alt={article.title}
                       fill
                       className="object-cover"
-                      data-ai-hint={image.imageHint}
                     />
                   </div>
                 )}

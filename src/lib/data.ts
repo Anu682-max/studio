@@ -25,7 +25,7 @@ export type NewsArticle = {
   title:string;
   date: string; // ISO string
   summary: string;
-  imagePlaceholderId: string;
+  imageUrl: string;
 };
 
 // Icon Map
@@ -145,7 +145,7 @@ export const addNewsArticle = async (article: Omit<NewsArticle, 'id'>) => {
   return await addDoc(newsCollection, article);
 };
 
-export const updateNewsArticle = async (id: string, article: Partial<NewsArticle>) => {
+export const updateNewsArticle = async (id: string, article: Partial<Omit<NewsArticle, 'id'>>) => {
   const articleDoc = doc(db, 'news', id);
   return await updateDoc(articleDoc, article);
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -57,6 +58,7 @@ import {
   addNewsArticle,
   updateNewsArticle,
   deleteNewsArticle,
+  uploadImage,
   type NewsArticle,
 } from '@/lib/data';
 
@@ -126,23 +128,41 @@ export default function NewsPage() {
     e.preventDefault();
     setIsSaving(true);
     const formData = new FormData(e.currentTarget);
-    const newArticleData = {
-      title: formData.get('title') as string,
-      date: new Date(formData.get('date') as string).toISOString(),
-      summary: formData.get('summary') as string,
-      imagePlaceholderId: 'news-1', // Default or select
-    };
+    const imageFile = formData.get('image') as File;
+    let imageUrl = currentArticle?.imageUrl || '';
 
     try {
-        if (currentArticle) {
-            await updateNewsArticle(currentArticle.id, newArticleData);
-            toast({ title: 'Амжилттай', description: 'Нийтлэлийг шинэчиллээ.' });
-        } else {
-            await addNewsArticle(newArticleData);
-            toast({ title: 'Амжилттай', description: 'Шинэ нийтлэл нэмлээ.' });
-        }
-        setIsDialogOpen(false);
-        await fetchNews(); // Refresh list
+      if (imageFile && imageFile.size > 0) {
+        imageUrl = await uploadImage(imageFile, `news/${Date.now()}_${imageFile.name}`);
+      }
+      
+      if (!imageUrl && !currentArticle) {
+        toast({
+            title: 'Алдаа',
+            description: 'Шинэ нийтлэлд зураг оруулах шаардлагатай.',
+            variant: 'destructive',
+        });
+        setIsSaving(false);
+        return;
+      }
+
+      const newArticleData = {
+        title: formData.get('title') as string,
+        date: new Date(formData.get('date') as string).toISOString(),
+        summary: formData.get('summary') as string,
+        imageUrl: imageUrl,
+      };
+
+      if (currentArticle) {
+          await updateNewsArticle(currentArticle.id, newArticleData);
+          toast({ title: 'Амжилттай', description: 'Нийтлэлийг шинэчиллээ.' });
+      } else {
+          await addNewsArticle(newArticleData as Omit<NewsArticle, 'id'>);
+          toast({ title: 'Амжилттай', description: 'Шинэ нийтлэл нэмлээ.' });
+      }
+      setIsDialogOpen(false);
+      setCurrentArticle(null);
+      await fetchNews(); // Refresh list
     } catch (error) {
       console.error('Failed to save article:', error);
       toast({
@@ -158,6 +178,9 @@ export default function NewsPage() {
   const renderSkeleton = () => (
     Array.from({ length: 3 }).map((_, index) => (
        <TableRow key={`skeleton-${index}`}>
+            <TableCell className="hidden sm:table-cell">
+                <Skeleton className="h-16 w-16 rounded-md" />
+            </TableCell>
             <TableCell>
                 <Skeleton className="h-5 w-4/5" />
             </TableCell>
@@ -193,6 +216,9 @@ export default function NewsPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="hidden w-[100px] sm:table-cell">
+                <span className="sr-only">Зураг</span>
+              </TableHead>
               <TableHead>Гарчиг</TableHead>
               <TableHead>Огноо</TableHead>
               <TableHead>
@@ -203,6 +229,17 @@ export default function NewsPage() {
           <TableBody>
             {isLoading ? renderSkeleton() : news.map((article) => (
               <TableRow key={article.id}>
+                 <TableCell className="hidden sm:table-cell">
+                    {article.imageUrl && (
+                      <Image
+                        alt={article.title}
+                        className="aspect-square rounded-md object-cover"
+                        height="64"
+                        src={article.imageUrl}
+                        width="64"
+                      />
+                    )}
+                  </TableCell>
                 <TableCell className="font-medium">{article.title}</TableCell>
                 <TableCell>{new Date(article.date).toLocaleDateString()}</TableCell>
                 <TableCell>
@@ -254,7 +291,14 @@ export default function NewsPage() {
         </div>
       </CardFooter>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
+        if (!isSaving) {
+            setIsDialogOpen(isOpen);
+            if (!isOpen) {
+                setCurrentArticle(null);
+            }
+        }
+      }}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{currentArticle ? 'Нийтлэл засах' : 'Нийтлэл нэмэх'}</DialogTitle>
@@ -282,6 +326,27 @@ export default function NewsPage() {
                 </Label>
                 <Textarea id="summary" name="summary" defaultValue={currentArticle?.summary} className="col-span-3" required/>
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="image" className="text-right">
+                  Зураг
+                </Label>
+                <Input
+                  id="image"
+                  name="image"
+                  type="file"
+                  className="col-span-3"
+                  accept="image/*"
+                  required={!currentArticle}
+                />
+              </div>
+               {currentArticle?.imageUrl && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="col-start-2 col-span-3">
+                         <img src={currentArticle.imageUrl} alt="Одоогийн нийтлэлийн зураг" width={200} height={200} className="rounded-md object-cover" />
+                         <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
+                    </div>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>Цуцлах</Button>
