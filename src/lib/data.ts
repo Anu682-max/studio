@@ -65,10 +65,21 @@ export const deleteService = async (id: string) => {
 // Project Functions
 const projectsCollection = collection(db, 'projects');
 
+// This is a hardcoded project to ensure there's always at least one project visible on the site.
+// In a real application, you would remove this and manage all projects via the CMS.
+const hardcodedProject: Project = {
+  id: 'hardcoded-1',
+  title: 'Орчин үеийн оффисын барилга',
+  category: 'Арилжааны',
+  imageUrl: 'https://firebasestorage.googleapis.com/v0/b/studio-3378510862-a72aa.appspot.com/o/b.jpg?alt=media&token=18b57a73-fe16-4654-8898-18e0a7fde9e8',
+  description: 'Хотын төвд байрлах, орчин үеийн, эрчим хүчний хэмнэлттэй оффисын барилгын иж бүрэн бүтээн байгуулалт.'
+};
+
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
   const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
-  return firestoreProjects;
+  // We prepend the hardcoded project to the array from Firestore.
+  return [hardcodedProject, ...firestoreProjects];
 };
 
 
@@ -78,7 +89,9 @@ export const addProject = async (project: Omit<Project, 'id'>) => {
 
 export const updateProject = async (id: string, project: Partial<Omit<Project, 'id'>>) => {
   if (id === 'hardcoded-1') {
-    console.log("Cannot update hardcoded project.");
+    // You can decide if you want to allow updating the hardcoded project.
+    // For this example, we'll log a message and do nothing.
+    console.log("Note: The hardcoded project is not editable through the dashboard.");
     return;
   }
   const projectDoc = doc(db, 'projects', id);
@@ -87,7 +100,7 @@ export const updateProject = async (id: string, project: Partial<Omit<Project, '
 
 export const deleteProject = async (id: string) => {
   if (id === 'hardcoded-1') {
-    console.log("Cannot delete hardcoded project.");
+    console.log("Cannot delete the hardcoded project.");
     return;
   }
   const projectDoc = doc(db, 'projects', id);
