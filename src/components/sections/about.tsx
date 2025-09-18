@@ -30,19 +30,19 @@ export default function About() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-center">
-              <Check className="h-5 w-5 text-accent mr-3 shrink-0" />
+              <Check className="h-5 w-5 text-primary mr-3 shrink-0" />
               <span className="font-semibold">Тогтвортой чанар</span>
             </div>
             <div className="flex items-center">
-              <Check className="h-5 w-5 text-accent mr-3 shrink-0" />
+              <Check className="h-5 w-5 text-primary mr-3 shrink-0" />
               <span className="font-semibold">Үйлчлүүлэгч төвтэй хандлага</span>
             </div>
             <div className="flex items-center">
-              <Check className="h-5 w-5 text-accent mr-3 shrink-0" />
+              <Check className="h-5 w-5 text-primary mr-3 shrink-0" />
               <span className="font-semibold">Тогтвортой хөгжлийн практик</span>
             </div>
             <div className="flex items-center">
-              <Check className="h-5 w-5 text-accent mr-3 shrink-0" />
+              <Check className="h-5 w-5 text-primary mr-3 shrink-0" />
               <span className="font-semibold">Цаг хугацаандаа хүлээлгэн өгөх</span>
             </div>
           </div>
