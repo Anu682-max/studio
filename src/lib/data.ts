@@ -3,6 +3,7 @@ import { db, storage } from './firebase/config';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LucideIcon } from 'lucide-react';
 import { Building, Hammer, Home, DraftingCompass, PaintRoller, LandPlot, ClipboardCheck, Wrench } from 'lucide-react';
+import { PlaceHolderImages } from './placeholder-images';
 
 // Types
 export type Service = {
@@ -113,6 +114,19 @@ const projectsCollection = collection(db, 'projects');
 export const getProjects = async (): Promise<Project[]> => {
   const snapshot = await getDocs(projectsCollection);
   const firestoreProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+  
+  if (firestoreProjects.length === 0) {
+      // Add a hardcoded project if there are no projects in Firestore
+      const defaultProject = {
+          title: "Хотын төвийн оффисын цамхаг",
+          category: "Арилжааны",
+          description: "Хотын төвийн бизнесийн дүүрэгт баригдсан 30 давхар оффисын барилга.",
+          imageUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      };
+      const docRef = await addProject(defaultProject);
+      return [{ id: docRef.id, ...defaultProject }];
+  }
+  
   return firestoreProjects;
 };
 
