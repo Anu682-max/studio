@@ -3,32 +3,32 @@
   "placeholderImages": [
     {
       "id": "hero-1",
-      "description": "Skyscrapers viewed from below with a digital network overlay.",
-      "imageUrl": "https://storage.googleapis.com/aai-web-samples/nextjs/barilga/hero.jpg",
-      "imageHint": "skyscrapers network"
+      "description": "A modern building with a striking architectural design.",
+      "imageUrl": "https://picsum.photos/seed/hero/1920/1080",
+      "imageHint": "modern architecture"
     },
     {
       "id": "about-1",
       "description": "A construction worker reviewing blueprints on a sunlit construction site.",
-      "imageUrl": "https://images.unsplash.com/photo-1541888946425-d81bb1924095?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://picsum.photos/seed/about/600/450",
       "imageHint": "construction blueprints"
     },
     {
       "id": "news-1",
       "description": "A team of architects and engineers in a meeting.",
-      "imageUrl": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://picsum.photos/seed/news1/600/400",
       "imageHint": "architects meeting"
     },
     {
       "id": "news-2",
       "description": "A crane lifting materials on a high-rise construction site.",
-      "imageUrl": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://picsum.photos/seed/news2/600/400",
       "imageHint": "construction crane"
     },
     {
       "id": "news-3",
       "description": "A groundbreaking ceremony with shovels in the dirt.",
-      "imageUrl": "https://images.unsplash.com/photo-1581092916377-62da447a4561?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://picsum.photos/seed/news3/600/400",
       "imageHint": "groundbreaking ceremony"
     }
   ]

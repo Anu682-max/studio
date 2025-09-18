@@ -121,7 +121,7 @@ export const getProjects = async (): Promise<Project[]> => {
           title: "Хотын төвийн оффисын цамхаг",
           category: "Арилжааны",
           description: "Хотын төвийн бизнесийн дүүрэгт баригдсан 30 давхар оффисын барилга.",
-          imageUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          imageUrl: "https://picsum.photos/seed/project1/600/400",
       };
       const docRef = await addProject(defaultProject);
       return [{ id: docRef.id, ...defaultProject }];
