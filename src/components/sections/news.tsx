@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SmartImage } from '@/components/smart-image';
 
 
 export default function News() {
@@ -62,7 +63,7 @@ export default function News() {
               <Card key={article.id} className="flex flex-col overflow-hidden">
                 {article.imageUrl && (
                   <div className="relative aspect-[4/3] w-full">
-                    <Image
+                    <SmartImage
                       src={article.imageUrl}
                       alt={article.title}
                       fill

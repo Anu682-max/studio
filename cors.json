@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["http://localhost:9002", "http://localhost:3000", "https://studio-3378510862-a72aa.web.app", "https://studio-3378510862-a72aa.firebaseapp.com"],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods"]
+  }
+]

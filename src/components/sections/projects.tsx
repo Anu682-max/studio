@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/carousel';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SmartImage } from '@/components/smart-image';
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -21,10 +22,13 @@ export default function Projects() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        console.log('Fetching projects...');
         const fetchedProjects = await getProjects();
-        setProjects(fetchedProjects);
+        console.log('Fetched projects:', fetchedProjects);
+        setProjects(fetchedProjects || []);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
+        setProjects([]);
       } finally {
         setIsLoading(false);
       }
@@ -63,12 +67,17 @@ export default function Projects() {
       <Carousel
         opts={{
           align: "start",
-          loop: projects.length > 2,
+          loop: (projects && projects.length > 2),
         }}
         className="w-full"
       >
         <CarouselContent>
-          {isLoading ? renderSkeleton() : projects.map((project) => {
+          {isLoading ? renderSkeleton() : (projects && projects.length > 0) ? projects.map((project) => {
+            // Skip projects without required data
+            if (!project || !project.id || !project.title) {
+              return null;
+            }
+            
             return (
               <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
@@ -76,7 +85,7 @@ export default function Projects() {
                     <CardContent className="p-0 flex flex-col flex-grow">
                       <div className="relative aspect-[3/2] w-full overflow-hidden">
                         {project.imageUrl && (
-                          <Image
+                          <SmartImage
                             src={project.imageUrl}
                             alt={project.title}
                             fill
@@ -91,20 +100,20 @@ export default function Projects() {
                             {project.description}
                           </CardDescription>
                         )}
-                        <Badge variant="secondary" className="mt-4 self-start">{project.category}</Badge>
+                        <Badge variant="secondary" className="mt-4 self-start">{project.category || 'Ерөнхий'}</Badge>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
               </CarouselItem>
             );
-          })}
+          }).filter(Boolean) : []}
         </CarouselContent>
         <CarouselPrevious className="hidden md:inline-flex" />
         <CarouselNext className="hidden md:inline-flex" />
       </Carousel>
       
-      {!isLoading && projects.length === 0 && (
+      {!isLoading && (!projects || projects.length === 0) && (
           <div className="text-center p-8 text-muted-foreground">
               Онцлох төсөл одоогоор байхгүй байна.
           </div>

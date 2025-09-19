@@ -170,8 +170,15 @@ export const deleteNewsArticle = async (id: string) => {
 
 // Storage Functions
 export const uploadImage = async (file: File, path: string): Promise<string> => {
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-    return downloadURL;
+    try {
+        console.log('🔄 Starting image upload:', path);
+        
+        // Use direct Firestore upload since Firebase Storage has connectivity issues
+        const { directFirestoreUpload } = await import('./direct-upload');
+        return await directFirestoreUpload(file, path);
+        
+    } catch (error: any) {
+        console.error('❌ Upload error:', error);
+        throw new Error(error.message || 'Файл хуулахад алдаа гарлаа.');
+    }
 }

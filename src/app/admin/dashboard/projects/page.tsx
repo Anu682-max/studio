@@ -4,6 +4,7 @@ import * as React from 'react';
 import Image from 'next/image';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { SmartImage } from '@/components/smart-image';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -167,11 +168,35 @@ export default function ProjectsPage() {
       setCurrentProject(null);
       await fetchProjects();
   
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save project:', error);
+      
+      // Show specific error message from upload or other operations
+      let errorMessage = 'Төслийг хадгалахад алдаа гарлаа.';
+      
+      if (error.message) {
+        // If there's a specific error message, use it
+        errorMessage = error.message;
+      } else if (error.code) {
+        // Handle specific Firebase error codes
+        switch (error.code) {
+          case 'storage/retry-limit-exceeded':
+            errorMessage = 'Файл хуулах хугацаа дууслаа. Интернетийн холболтоо шалгаад дахин оролдоно уу.';
+            break;
+          case 'storage/unauthorized':
+            errorMessage = 'Зураг хуулахын тулд нэвтэрч орно уу.';
+            break;
+          case 'storage/quota-exceeded':
+            errorMessage = 'Хадгалах сангийн багтаамж дүүрсэн байна.';
+            break;
+          default:
+            errorMessage = `Алдаа: ${error.code}`;
+        }
+      }
+      
       toast({
         title: 'Алдаа',
-        description: 'Төслийг хадгалахад алдаа гарлаа.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -234,12 +259,12 @@ export default function ProjectsPage() {
                 <TableRow key={project.id}>
                   <TableCell className="hidden sm:table-cell">
                     {project.imageUrl && (
-                      <Image
+                      <SmartImage
                         alt={project.title}
                         className="aspect-square rounded-md object-cover"
-                        height="64"
+                        height={64}
                         src={project.imageUrl}
-                        width="64"
+                        width={64}
                       />
                     )}
                   </TableCell>
@@ -388,7 +413,7 @@ export default function ProjectsPage() {
                {currentProject?.imageUrl && (
                 <div className="grid grid-cols-4 items-center gap-4">
                     <div className="col-start-2 col-span-3">
-                         <img src={currentProject.imageUrl} alt="Current project image" width={200} height={200} className="rounded-md object-cover" />
+                         <SmartImage src={currentProject.imageUrl} alt="Current project image" width={200} height={200} className="rounded-md object-cover" />
                          <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
                     </div>
                 </div>

@@ -4,6 +4,8 @@ import * as React from 'react';
 import Image from 'next/image';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FirebaseDebugInfo } from '@/components/firebase-debug';
+import { SmartImage } from '@/components/smart-image';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -132,8 +134,18 @@ export default function NewsPage() {
     let imageUrl = currentArticle?.imageUrl || '';
 
     try {
+      console.log('Starting to save article...');
+      console.log('Form data:', {
+        title: formData.get('title'),
+        date: formData.get('date'),
+        summary: formData.get('summary'),
+        hasImage: imageFile && imageFile.size > 0
+      });
+
       if (imageFile && imageFile.size > 0) {
+        console.log('Uploading image:', imageFile.name, 'Size:', imageFile.size);
         imageUrl = await uploadImage(imageFile, `news/${Date.now()}_${imageFile.name}`);
+        console.log('Image uploaded successfully:', imageUrl);
       }
       
       if (!imageUrl && !currentArticle) {
@@ -153,6 +165,8 @@ export default function NewsPage() {
         imageUrl: imageUrl,
       };
 
+      console.log('Saving article data:', newArticleData);
+
       if (currentArticle) {
           await updateNewsArticle(currentArticle.id, newArticleData);
           toast({ title: 'Амжилттай', description: 'Нийтлэлийг шинэчиллээ.' });
@@ -163,11 +177,35 @@ export default function NewsPage() {
       setIsDialogOpen(false);
       setCurrentArticle(null);
       await fetchNews(); // Refresh list
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save article:', error);
+      
+      // Show specific error message from upload or other operations
+      let errorMessage = 'Нийтлэлийг хадгалахад алдаа гарлаа.';
+      
+      if (error.message) {
+        // If there's a specific error message, use it
+        errorMessage = error.message;
+      } else if (error.code) {
+        // Handle specific Firebase error codes
+        switch (error.code) {
+          case 'storage/retry-limit-exceeded':
+            errorMessage = 'Файл хуулах хугацаа дууслаа. Интернетийн холболтоо шалгаад дахин оролдоно уу.';
+            break;
+          case 'storage/unauthorized':
+            errorMessage = 'Зураг хуулахын тулд нэвтэрч орно уу.';
+            break;
+          case 'storage/quota-exceeded':
+            errorMessage = 'Хадгалах сангийн багтаамж дүүрсэн байна.';
+            break;
+          default:
+            errorMessage = `Алдаа: ${error.code}`;
+        }
+      }
+      
       toast({
         title: 'Алдаа',
-        description: 'Нийтлэлийг хадгалахад алдаа гарлаа.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -195,7 +233,8 @@ export default function NewsPage() {
   );
 
   return (
-    <Card className="bg-card">
+    <>
+    <Card className="bg-card">{/* existing content */}
       <CardHeader>
         <div className="flex items-center justify-between">
             <div>
@@ -231,12 +270,12 @@ export default function NewsPage() {
               <TableRow key={article.id}>
                  <TableCell className="hidden sm:table-cell">
                     {article.imageUrl && (
-                      <Image
+                      <SmartImage
                         alt={article.title}
                         className="aspect-square rounded-md object-cover"
-                        height="64"
+                        height={64}
                         src={article.imageUrl}
-                        width="64"
+                        width={64}
                       />
                     )}
                   </TableCell>
@@ -342,7 +381,7 @@ export default function NewsPage() {
                {currentArticle?.imageUrl && (
                 <div className="grid grid-cols-4 items-center gap-4">
                     <div className="col-start-2 col-span-3">
-                         <img src={currentArticle.imageUrl} alt="Одоогийн нийтлэлийн зураг" width={200} height={200} className="rounded-md object-cover" />
+                         <SmartImage src={currentArticle.imageUrl} alt="Одоогийн нийтлэлийн зураг" width={200} height={200} className="rounded-md object-cover" />
                          <p className="text-xs text-muted-foreground mt-1">Одоогийн зураг. Шинээр оруулах бол дээрээс сонгоно уу.</p>
                     </div>
                 </div>
@@ -356,5 +395,7 @@ export default function NewsPage() {
         </DialogContent>
       </Dialog>
     </Card>
+    <FirebaseDebugInfo />
+    </>
   );
 }

@@ -38,8 +38,18 @@ yarn-error.log*
 next-env.d.ts
 
 .genkit/*
+
+# Environment variables (keep .env.example for reference)
 .env*
+!.env.example
 
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Admin utility scripts (keep for development)
+create-admin.js
+test-login.js
+
+# Temporary files
+.modified
