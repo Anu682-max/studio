@@ -1,15 +1,6 @@
 {
   "version": 2,
   "name": "abs-construction-studio",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/admin/(.*)",
