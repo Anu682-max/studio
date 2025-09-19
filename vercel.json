@@ -16,13 +16,5 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }
     }
-  ],
-  "functions": {
-    "app/admin/**": {
-      "maxDuration": 30
-    },
-    "api/**": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
